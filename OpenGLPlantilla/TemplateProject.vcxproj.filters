@@ -90,6 +90,9 @@
     <ClInclude Include="Ogro.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Caballo.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glew\source\glew.c">
@@ -187,6 +190,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Ogro.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Caballo.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
   </ItemGroup>

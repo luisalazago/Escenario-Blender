@@ -10,6 +10,7 @@
 #include "CasaPobre.h"
 #include "Molino.h"
 #include "Ogro.h"
+#include "Caballo.h"
 #include <iostream>
 #include "glsl.h"
 #include <time.h>
@@ -30,6 +31,7 @@ protected:
    CasaPobre casa_pobre;
    Molino molino;
    Ogro ogro;
+   Caballo rocinante;
 
 public:
 	myWindow(){}
@@ -92,6 +94,12 @@ public:
 
          glPushMatrix();
             glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
+            // Caballo
+            glPushMatrix();
+                glTranslatef(0.3, -0.2, 0.5);
+                glScalef(0.25, 0.25, 0.25);
+                rocinante.dibujarCaballo();
+            glPopMatrix();
             //Molinos
             glPushMatrix();
                 glTranslatef(-x, 0, 0);
@@ -153,6 +161,7 @@ public:
       casa_pobre = CasaPobre();
       molino = Molino();
       ogro = Ogro();
+      rocinante = Caballo();
 
       DemoLight();
 
