@@ -37,13 +37,13 @@ public:
 	virtual void OnRender(void)
 	{
         double n, m, x;
-        n = 2; m = 2; x = 5;
+        n = 2; m = 2; x = 0.5;
 	  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
       //timer010 = 0.09; //for screenshot!
       glPushMatrix();
       if (shader) shader->begin();
-         glTranslatef(0.0f, 0.0f, -1.5f);
+         glTranslatef(2.0f, 0.0f, -1.5f);
          glRotatef(timer010 * 360, 0.5, 1.0f, 0.1f);
 
          //Casas nobles
@@ -64,19 +64,23 @@ public:
 
          glPushMatrix();
              //Casa pobre 1
-            glTranslatef((-1*n)/2, 0, (-1 * m));
+            glTranslatef((-1*n)/2, 0, 0/*(-1 * m)*/);
+            /*glPushMatrix();
+                
+            glPopMatrix();*/
+            glTranslatef(0, 0, (-1 * m));
             for (int i = 0; i < 2; ++i){
                 glPushMatrix();
                     glTranslatef(0, 0, -1 * (i * 1));
                     glScalef(0.25, 0.25, 0.25);
                     glPushMatrix();
-                        glTranslatef(n, 0.0, 0.0);
+                        glTranslatef(2*n, 0.0, 0.0);
                         glRotatef(45, 0, 1, 0);
                         casa_pobre.dibujarCasaPobre();
                     glPopMatrix();
 
                     glPushMatrix();
-                        glTranslatef(-1 * n, 0.0, 0.0);
+                        glTranslatef(-2 * n, 0.0, 0.0);
                         glRotatef(180, 0, 1, 0);
                         casa_pobre.dibujarCasaPobre();
                     glPopMatrix();
@@ -84,14 +88,33 @@ public:
             }
          glPopMatrix();
 
-         glPushMatrix();
-            //glTranslatef(-3.0, 0.0, 0.0);
-            //molino.dibujarMolino();
-         glPopMatrix();
+         //Sector 3 ubicación molinos
 
          glPushMatrix();
-             //glTranslatef(0.0, 3.0, 0.0);
-             //ogro.dibujarOgro();
+            glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
+            //Molinos
+            glPushMatrix();
+                glTranslatef(-x, 0, 0);
+                for (int i = 0; i < 2; ++i) {
+                    glPushMatrix();
+                        glTranslatef(0, 0, -1 * (i * 2));
+                        glScalef(0.33, 0.33, 0.33);
+                        molino.dibujarMolino();
+                    glPopMatrix();
+                }
+            glPopMatrix();
+
+            //Ogros
+            glPushMatrix();
+                glTranslatef(x, 0, 0);
+                for (int i = 0; i < 2; ++i) {
+                    glPushMatrix();
+                    glTranslatef(0, 0, -1 * (i * 2));
+                    glScalef(0.33, 0.33, 0.33);
+                    ogro.dibujarOgro();
+                    glPopMatrix();
+                }
+            glPopMatrix();
          glPopMatrix();
 
       if (shader) shader->end();
