@@ -6,14 +6,14 @@
 #include <GL/freeglut.h>
 #include "glApplication.h"
 #include "glutWindow.h"
-#include "CasaNoble.h"
-#include "CasaPobre.h"
-#include "Molino.h"
-#include "Ogro.h"
 #include "Caballo.h"
+#include "DonQuijote.h"
 #include <iostream>
 #include "glsl.h"
 #include <time.h>
+#include <FreeImage.h>
+
+#define deltaX 0.01
 
 //-----------------------------------------------------------------------------
 
@@ -23,109 +23,85 @@ class myWindow : public cwc::glutWindow
 protected:
    cwc::glShaderManager SM;
    cwc::glShader *shader;
+   cwc::glShader* shaderT;
    GLuint ProgramObject;
+   GLuint textId;
    clock_t time0,time1;
    float timer010;  // timer counting 0->1->0
    bool bUp;        // flag if counting up or down.
-   CasaNoble casa_noble;
-   CasaPobre casa_pobre;
-   Molino molino;
-   Ogro ogro;
    Caballo rocinante;
+   DonQuijote donQuijote;
+   bool movX, movD, movA, movAbajo, movZ1, movZ2;
+   float camX, camY, camZ;
+   GLuint texid;
 
 public:
 	myWindow(){}
 
+    void posCamara() {
+        if (movX) camX += deltaX;
+        else if (movD) camX -= deltaX;
+        else if (movA) camY -= deltaX;
+        else if (movAbajo) camY += deltaX;
+        else if (movZ1) camZ += deltaX;
+        else if (movZ2) camZ -= deltaX;
+    }
+
+    void initialize_textures(void)
+    {
+        int w, h;
+        GLubyte* data = 0;
+        //data = glmReadPPM("soccer_ball_diffuse.ppm", &w, &h);
+        //std::cout << "Read soccer_ball_diffuse.ppm, width = " << w << ", height = " << h << std::endl;
+        //dib1 = loadImage("soccer_ball_diffuse.jpg"); //FreeImage
+        
+        glGenTextures(1, &texid);
+        glBindTexture(GL_TEXTURE_2D, texid);
+        glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        
+        // Loading JPG file
+        FIBITMAP* bitmap = FreeImage_Load(
+            FreeImage_GetFileType("./Mallas/libro.jpg", 0),
+            "./Mallas/libro.jpg");
+        FIBITMAP* pImage = FreeImage_ConvertTo32Bits(bitmap);
+        int nWidth = FreeImage_GetWidth(pImage);
+        int nHeight = FreeImage_GetHeight(pImage);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight,
+            0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(pImage));
+        FreeImage_Unload(pImage);
+        //
+        glEnable(GL_TEXTURE_2D);
+    }
+
 	virtual void OnRender(void)
 	{
-        double n, m, x;
-        n = 2; m = 2; x = 0.5;
+      double n, m, x;
+      n = 2; m = 2; x = 0.5;
 	  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
       //timer010 = 0.09; //for screenshot!
       glPushMatrix();
       if (shader) shader->begin();
-         glTranslatef(2.0f, 0.0f, -1.5f);
-         glRotatef(timer010 * 360, 0.5, 1.0f, 0.1f);
-
-         //Casas nobles
-
-         //La casa de don quijote de la mancha
-         glPushMatrix();
-            casa_noble.dibujarCasaNoble();
-         glPopMatrix();
-
-         //Casa noble del frente de don quijote
-         glPushMatrix();
-            glTranslatef(-1*n, 0, 0);
-            glRotatef(180, 0, 1, 0);
-            casa_noble.dibujarCasaNoble();
-         glPopMatrix();
-
-         //Casas pobres
-
-         glPushMatrix();
-             //Casa pobre 1
-            glTranslatef((-1*n)/2, 0, 0/*(-1 * m)*/);
-            /*glPushMatrix();
-                
-            glPopMatrix();*/
-            glTranslatef(0, 0, (-1 * m));
-            for (int i = 0; i < 2; ++i){
-                glPushMatrix();
-                    glTranslatef(0, 0, -1 * (i * 1));
-                    glScalef(0.25, 0.25, 0.25);
-                    glPushMatrix();
-                        glTranslatef(2*n, 0.0, 0.0);
-                        glRotatef(45, 0, 1, 0);
-                        casa_pobre.dibujarCasaPobre();
-                    glPopMatrix();
-
-                    glPushMatrix();
-                        glTranslatef(-2 * n, 0.0, 0.0);
-                        glRotatef(180, 0, 1, 0);
-                        casa_pobre.dibujarCasaPobre();
-                    glPopMatrix();
-                glPopMatrix();
-            }
-         glPopMatrix();
-
-         //Sector 3 ubicación molinos
-
-         glPushMatrix();
-            glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
-            // Caballo
-            glPushMatrix();
-                glTranslatef(0.3, -0.2, 0.5);
-                glScalef(0.25, 0.25, 0.25);
-                rocinante.dibujarCaballo();
-            glPopMatrix();
-            //Molinos
-            glPushMatrix();
-                glTranslatef(-x, 0, 0);
-                for (int i = 0; i < 2; ++i) {
-                    glPushMatrix();
-                        glTranslatef(0, 0, -1 * (i * 2));
-                        glScalef(0.33, 0.33, 0.33);
-                        molino.dibujarMolino();
-                    glPopMatrix();
-                }
-            glPopMatrix();
-
-            //Ogros
-            glPushMatrix();
-                glTranslatef(x, 0, 0);
-                for (int i = 0; i < 2; ++i) {
-                    glPushMatrix();
-                    glTranslatef(0, 0, -1 * (i * 2));
-                    glScalef(0.33, 0.33, 0.33);
-                    ogro.dibujarOgro();
-                    glPopMatrix();
-                }
-            glPopMatrix();
-         glPopMatrix();
-
+          posCamara();
+          glTranslatef(camX, camY, camZ);
+          glRotatef(0.0, 0.0, 0.0, 1.0);
+          glPushMatrix();
+            rocinante.dibujarCaballo();
+          glPopMatrix();
       if (shader) shader->end();
+
+      if (shaderT) shaderT->begin();
+          posCamara();
+          glTranslatef(camX, camY, camZ);
+          glRotatef(0.0, 0.0, 0.0, 1.0);
+          glPushMatrix();
+            glTranslatef(3.0, 0.0, 0.0);
+            glBindTexture(GL_TEXTURE_2D, texid);
+            donQuijote.dibujarDonQuijote();
+          glPopMatrix();
+      if (shaderT) shaderT->end();
       glutSwapBuffers();
       glPopMatrix();
 
@@ -146,25 +122,33 @@ public:
 
 		shader = SM.loadfromFile("vertexshader.txt","fragmentshader.txt"); // load (and compile, link) from file
 		if (shader==0) 
-         std::cout << "Error Loading, compiling or linking shader\n";
-      else
-      {
-         ProgramObject = shader->GetProgramObject();
-      }
+            std::cout << "Error Loading, compiling or linking shader\n";
+        else
+        {
+            ProgramObject = shader->GetProgramObject();
+        }
+
+        shaderT = SM.loadfromFile("vertexshaderT.txt", "fragmentshaderT.txt"); // load (and compile, link) from file
+        if (shaderT == 0)
+            std::cout << "Error Loading, compiling or linking shader\n";
+        else
+        {
+            ProgramObject = shaderT->GetProgramObject();
+        }
 
       time0 = clock();
       timer010 = 0.0f;
       bUp = true;
       
       // Objetos dentro del mundo
-      casa_noble = CasaNoble();
-      casa_pobre = CasaPobre();
-      molino = Molino();
-      ogro = Ogro();
       rocinante = Caballo();
+      donQuijote = DonQuijote();
+
+      initialize_textures();
 
       DemoLight();
-
+      movX = movD = movA = movAbajo = movZ1 = movZ2 = false;
+      camX = camY = camZ = 0;
 	}
 
 	virtual void OnResize(int w, int h)
@@ -190,18 +174,63 @@ public:
 	virtual void OnMouseWheel(int nWheelNumber, int nDirection, int x, int y){}
 
 	virtual void OnKeyDown(int nKey, char cAscii)
-	{       
-		if (cAscii == 27) // 0x1b = ESC
-		{
-			this->Close(); // Close Window!
-		} 
+	{    
+        std::cout << cAscii << std::endl;
+        switch (cAscii) {
+            case 27: 
+                this->Close(); // Close Window!
+                break;
+            case 'a':
+                movX = true;
+                break;
+            case 'd':
+                movD = true;
+                break;
+            case 's':
+                movAbajo = true;
+                break;
+            case 'w':
+                movA = true;
+                break;
+            case 'z':
+                movZ1 = true;
+                break;
+            case 'x':
+                movZ2 = true;
+                break;
+        }
+        // std::cout << movX << std::endl;
 	};
 
 	virtual void OnKeyUp(int nKey, char cAscii)
 	{
+      switch (cAscii) {
+        case 27:
+            this->Close(); // Close Window!
+            break;
+        case 'a':
+            movX = false;
+            break;
+        case 'd':
+            movD = false;
+            break;
+        case 's':
+            movAbajo = false;
+            break;
+        case 'w':
+            movA = false;
+            break;
+        case 'z':
+            movZ1 = false;
+            break;
+        case 'x':
+            movZ2 = false;
+            break;
+      }
+      /*
       if (cAscii == 's')      // s: Shader
-         shader->enable();
-      else if (cAscii == 'f') // f: Fixed Function
+         shader->enable();*/
+      if (cAscii == 'f') // f: Fixed Function
          shader->disable();
 	}
 
@@ -234,16 +263,16 @@ public:
      
      // Light model parameters:
      // -------------------------------------------
-     
+     /*
      GLfloat lmKa[] = {0.0, 0.0, 0.0, 0.0 };
      glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmKa);
      
      glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0);
      glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0.0);
-     
+     */
      // -------------------------------------------
      // Spotlight Attenuation
-     
+     /*
      GLfloat spot_direction[] = {1.0, -1.0, -1.0 };
      GLint spot_exponent = 30;
      GLint spot_cutoff = 180;
@@ -259,24 +288,24 @@ public:
      glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,Kc);
      glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, Kl);
      glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, Kq);
-     
+     */
      
      // ------------------------------------------- 
      // Lighting parameters:
-
-     GLfloat light_pos[] = {0.0f, 5.0f, 5.0f, 1.0f};
+     
+     GLfloat light_pos[] = {0.0f, 5.0f, 5.0f, 1.0f};/*
      GLfloat light_Ka[]  = {1.0f, 0.5f, 0.5f, 1.0f};
      GLfloat light_Kd[]  = {1.0f, 0.1f, 0.1f, 1.0f};
      GLfloat light_Ks[]  = {1.0f, 1.0f, 1.0f, 1.0f};
-
-     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+     */
+     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);/*
      glLightfv(GL_LIGHT0, GL_AMBIENT, light_Ka);
      glLightfv(GL_LIGHT0, GL_DIFFUSE, light_Kd);
      glLightfv(GL_LIGHT0, GL_SPECULAR, light_Ks);
-
+     */
      // -------------------------------------------
      // Material parameters:
-
+     /*
      GLfloat material_Ka[] = {0.5f, 0.0f, 0.0f, 1.0f};
      GLfloat material_Kd[] = {0.4f, 0.4f, 0.5f, 1.0f};
      GLfloat material_Ks[] = {0.8f, 0.8f, 0.0f, 1.0f};
@@ -288,6 +317,7 @@ public:
      glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_Ks);
      glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, material_Ke);
      glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material_Se);
+     */
    }
 };
 
