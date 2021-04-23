@@ -19,6 +19,7 @@
 #include <FreeImage.h>
 
 #define deltaX 0.01
+#define deltaAlfa 0.1
 
 //-----------------------------------------------------------------------------
 
@@ -63,19 +64,19 @@ public:
     void posVision() {
         if (rotarDer) {
             ejey++;
-            alfa = ((int)alfa + 1) % 360;
+            alfa = alfa + deltaAlfa < 360 ? alfa + deltaAlfa : 0;
         }
         else if (rotarIzq) {
-            ejey--;
-            alfa = (int)alfa - 1 > 0 ? (int)alfa - 1 : 360 - 1;
+            ejey++;
+            alfa = alfa - deltaAlfa >= 0 ? alfa - deltaAlfa : 360 - deltaAlfa;
         }
         if (rotarUp) {
             ejex++;
-            alfa = ((int)alfa + 1) % 360;
+            alfa = alfa + deltaAlfa < 360 ? alfa + deltaAlfa : 0;
         }
         else if (rotarDown) {
-            ejex--;
-            alfa = (int)alfa - 1 > 0 ? (int)alfa - 1 : 360 - 1;
+            ejex++;
+            alfa = alfa - deltaAlfa >= 0 ? alfa - deltaAlfa : 360 - deltaAlfa;
         }
     }
 
@@ -118,7 +119,7 @@ public:
       posCamara();
       posVision();
       glTranslatef(camX, camY, camZ);
-      glRotatef(alfa, ejex, ejey, ejey);
+      glRotatef(alfa, ejex, ejey, ejez);
       if (shader) shader->begin();
           glTranslatef(2.0f, 0.0f, -1.5f);
 
@@ -335,9 +336,6 @@ public:
                 rotarDer = true;
                 break;
             case 'r':
-                camY = 0;
-                camX = 0;
-                camZ = 0;
                 ejex = 0;
                 ejey = 0;
                 ejez = 0;
