@@ -8,12 +8,17 @@
 #include "glutWindow.h"
 #include "Caballo.h"
 #include "DonQuijote.h"
+#include "Plano.h"
+#include "CasaNoble.h"
+#include "CasaPobre.h"
+#include "Molino.h"
+#include "Ogro.h"
 #include <iostream>
 #include "glsl.h"
 #include <time.h>
 #include <FreeImage.h>
 
-#define deltaX 0.01
+#define deltaX 0.1
 
 //-----------------------------------------------------------------------------
 
@@ -31,6 +36,11 @@ protected:
    bool bUp;        // flag if counting up or down.
    Caballo rocinante;
    DonQuijote donQuijote;
+   Plano plano;
+   CasaNoble casa_noble;
+   CasaPobre casa_pobre;
+   Molino molino;
+   Ogro ogro;
    bool movX, movD, movA, movAbajo, movZ1, movZ2;
    float camX, camY, camZ;
    GLuint texid;
@@ -83,21 +93,103 @@ public:
 	
       //timer010 = 0.09; //for screenshot!
       glPushMatrix();
+      posCamara();
+      glTranslatef(camX, camY, camZ);
       if (shader) shader->begin();
-          posCamara();
-          glTranslatef(camX, camY, camZ);
-          glRotatef(0.0, 0.0, 0.0, 1.0);
+          glTranslatef(2.0f, 0.0f, -1.5f);
+
+          //Casas nobles
+
+          //La casa de don quijote de la mancha
           glPushMatrix();
-            rocinante.dibujarCaballo();
+            casa_noble.dibujarCasaNoble();
+          glPopMatrix();
+
+          //Casa noble del frente de don quijote
+          glPushMatrix();
+              glTranslatef(-1 * n, 0, 0);
+              glRotatef(180, 0, 1, 0);
+              casa_noble.dibujarCasaNoble();
+          glPopMatrix();
+
+          //Casas pobres
+
+          glPushMatrix();
+              //Casa pobre 1
+              glTranslatef((-1 * n) / 2, 0, 0/*(-1 * m)*/);
+              /*glPushMatrix();
+
+              glPopMatrix();*/
+              glTranslatef(0, 0, (-1 * m));
+              for (int i = 0; i < 2; ++i) {
+                  glPushMatrix();
+                      glTranslatef(0, 0, -1 * (i * 1));
+                      glScalef(0.25, 0.25, 0.25);
+                      glPushMatrix();
+                          glTranslatef(2 * n, -0.4, 0.0);
+                          glRotatef(45, 0, 1, 0);
+                          casa_pobre.dibujarCasaPobre();
+                      glPopMatrix();
+
+                      glPushMatrix();
+                          glTranslatef(-2 * n, -0.4, 0.0);
+                          glRotatef(180, 0, 1, 0);
+                          casa_pobre.dibujarCasaPobre();
+                      glPopMatrix();
+                  glPopMatrix();
+              }
+          glPopMatrix();
+
+          //Sector 3 ubicación molinos
+
+          glPushMatrix();
+              glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
+              // Caballo
+              glPushMatrix();
+                  glTranslatef(0.3, -0.2, 0.5);
+                  glScalef(0.25, 0.25, 0.25);
+                  rocinante.dibujarCaballo();
+              glPopMatrix();
+              // Plano
+              glPushMatrix();
+                glTranslatef(0.0, ((-1 * m) / 6), 0.0);
+                glScalef(10.0, 0.01, 20.0);
+                plano.dibujarPlano(1.0);
+              glPopMatrix();
+              //Molinos
+              glPushMatrix();
+                  glTranslatef(-x, 0, 0);
+                  for (int i = 0; i < 2; ++i) {
+                      glPushMatrix();
+                          glTranslatef(0, 0, -1 * (i * 2));
+                          glScalef(0.33, 0.33, 0.33);
+                          molino.dibujarMolino();
+                      glPopMatrix();
+                  }
+              glPopMatrix();
+
+              //Ogros
+              glPushMatrix();
+                  glTranslatef(x, 0, 0);
+                  for (int i = 0; i < 2; ++i) {
+                      glPushMatrix();
+                          glTranslatef(0, -0.07, -1 * (i * 2));
+                          glScalef(0.33, 0.33, 0.33);
+                          ogro.dibujarOgro();
+                      glPopMatrix();
+                  }
+              glPopMatrix();
           glPopMatrix();
       if (shader) shader->end();
 
       if (shaderT) shaderT->begin();
-          posCamara();
-          glTranslatef(camX, camY, camZ);
-          glRotatef(0.0, 0.0, 0.0, 1.0);
+          glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
+          
+          // Don Quijote
           glPushMatrix();
-            glTranslatef(3.0, 0.0, 0.0);
+            glTranslatef(0.3, -0.08, 0.5);
+            glRotatef(90, 1.0, 0.0, 0.0);
+            glScalef(0.06, 0.06, 0.06);
             glBindTexture(GL_TEXTURE_2D, texid);
             donQuijote.dibujarDonQuijote();
           glPopMatrix();
@@ -143,6 +235,11 @@ public:
       // Objetos dentro del mundo
       rocinante = Caballo();
       donQuijote = DonQuijote();
+      plano = Plano();
+      casa_pobre = CasaPobre();
+      casa_noble = CasaNoble();
+      molino = Molino();
+      ogro = Ogro();
 
       initialize_textures();
 

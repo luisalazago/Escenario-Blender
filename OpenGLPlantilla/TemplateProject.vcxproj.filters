@@ -93,6 +93,12 @@
     <ClInclude Include="Caballo.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="DonQuijote.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Plano.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glew\source\glew.c">
@@ -193,6 +199,12 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Caballo.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="DonQuijote.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Plano.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
   </ItemGroup>
