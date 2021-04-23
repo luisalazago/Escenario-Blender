@@ -18,7 +18,7 @@
 #include <time.h>
 #include <FreeImage.h>
 
-#define deltaX 0.1
+#define deltaX 0.01
 
 //-----------------------------------------------------------------------------
 
@@ -43,6 +43,9 @@ protected:
    Ogro ogro;
    bool movX, movD, movA, movAbajo, movZ1, movZ2;
    float camX, camY, camZ;
+   bool rotarDer, rotarIzq, rotarUp, rotarDown;
+   float ejex, ejey, ejez;
+   float alfa;
    GLuint texid;
 
 public:
@@ -55,6 +58,25 @@ public:
         else if (movAbajo) camY += deltaX;
         else if (movZ1) camZ += deltaX;
         else if (movZ2) camZ -= deltaX;
+    }
+
+    void posVision() {
+        if (rotarDer) {
+            ejey++;
+            alfa = ((int)alfa + 1) % 360;
+        }
+        else if (rotarIzq) {
+            ejey--;
+            alfa = (int)alfa - 1 > 0 ? (int)alfa - 1 : 360 - 1;
+        }
+        if (rotarUp) {
+            ejex++;
+            alfa = ((int)alfa + 1) % 360;
+        }
+        else if (rotarDown) {
+            ejex--;
+            alfa = (int)alfa - 1 > 0 ? (int)alfa - 1 : 360 - 1;
+        }
     }
 
     void initialize_textures(void)
@@ -94,7 +116,9 @@ public:
       //timer010 = 0.09; //for screenshot!
       glPushMatrix();
       posCamara();
+      posVision();
       glTranslatef(camX, camY, camZ);
+      glRotatef(alfa, ejex, ejey, ejey);
       if (shader) shader->begin();
           glTranslatef(2.0f, 0.0f, -1.5f);
 
@@ -246,6 +270,8 @@ public:
       DemoLight();
       movX = movD = movA = movAbajo = movZ1 = movZ2 = false;
       camX = camY = camZ = 0;
+      rotarDer = rotarIzq = rotarUp = rotarDown = false;
+      ejex = ejey = ejez = alfa = 0;
 	}
 
 	virtual void OnResize(int w, int h)
@@ -295,6 +321,28 @@ public:
             case 'x':
                 movZ2 = true;
                 break;
+             //Vision rotacion
+            case 'i':
+                rotarUp = true;
+                break;
+            case 'k':
+                rotarDown = true;
+                break;
+            case 'j':
+                rotarIzq = true;
+                break;
+            case 'l':
+                rotarDer = true;
+                break;
+            case 'r':
+                camY = 0;
+                camX = 0;
+                camZ = 0;
+                ejex = 0;
+                ejey = 0;
+                ejez = 0;
+                alfa = 0;
+                break;
         }
         // std::cout << movX << std::endl;
 	};
@@ -322,6 +370,19 @@ public:
             break;
         case 'x':
             movZ2 = false;
+            break;
+        //Vision rotacion
+        case 'i':
+            rotarUp = false;
+            break;
+        case 'k': 
+            rotarDown = false;
+            break;
+        case 'j':
+            rotarIzq = false;
+            break;
+        case 'l':
+            rotarDer = false;
             break;
       }
       /*
