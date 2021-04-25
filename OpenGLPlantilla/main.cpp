@@ -8,6 +8,7 @@
 #include "glutWindow.h"
 #include "Caballo.h"
 #include "DonQuijote.h"
+#include "Sancho.h"
 #include "Plano.h"
 #include "CasaNoble.h"
 #include "CasaPobre.h"
@@ -38,6 +39,7 @@ protected:
    bool bUp;        // flag if counting up or down.
    Caballo rocinante;
    DonQuijote donQuijote;
+   Sancho sancho;
    Plano plano;
    CasaNoble casa_noble;
    CasaPobre casa_pobre;
@@ -192,6 +194,12 @@ public:
                 glScalef(10.0, 0.01, 20.0);
                 plano.dibujarPlano(1.0);
               glPopMatrix();
+              // Sancho Panza
+              glPushMatrix();
+                glTranslatef(-0.1, -0.238, 0.7);
+                glScalef(0.1, 0.1, 0.1);
+                sancho.dibujarSancho();
+              glPopMatrix();
               //Molinos
               glPushMatrix();
                   glTranslatef(-x, 0, 0);
@@ -221,7 +229,7 @@ public:
       if (shaderT) shaderT->begin();
           // Don Quijote
           glPushMatrix();
-          glTranslatef(movRocX, -0.08, movRocZ);
+            glTranslatef(movRocX, -0.08, movRocZ);
             glRotatef(90, 1.0, 0.0, 0.0);
             glScalef(0.06, 0.06, 0.06);
             glBindTexture(GL_TEXTURE_2D, texid);
@@ -269,6 +277,7 @@ public:
       // Objetos dentro del mundo
       rocinante = Caballo();
       donQuijote = DonQuijote();
+      sancho = Sancho();
       plano = Plano();
       casa_pobre = CasaPobre();
       casa_noble = CasaNoble();

@@ -99,6 +99,9 @@
     <ClInclude Include="Plano.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Sancho.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glew\source\glew.c">
@@ -205,6 +208,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Plano.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sancho.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
   </ItemGroup>

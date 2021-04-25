@@ -112,6 +112,7 @@
     <ClInclude Include="Molino.h" />
     <ClInclude Include="Ogro.h" />
     <ClInclude Include="Plano.h" />
+    <ClInclude Include="Sancho.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Caballo.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Molino.cpp" />
     <ClCompile Include="Ogro.cpp" />
     <ClCompile Include="Plano.cpp" />
+    <ClCompile Include="Sancho.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut\source\freeglutdll.def" />
