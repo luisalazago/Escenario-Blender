@@ -1,0 +1,14 @@
+Misión realismo OGL
+
+Para el mundo se incorporaron una serie de objetos Naturales y Artificiales.
+Los naturales fueron Rocinante (caballo) y los gigantes. Para los artificiales
+tenemos las casas junto con los molinos. Además de la representación de Don
+Quijote como libro y Sancho Panza como una esfera con gorro. El elemento que creo
+nuestra tribu, Cacciatori Infernum, fue el molino. Y la textura se ocupó en el libro
+que representa a Don Quijote. 
+
+Para agregar las mallas se siguió una estructura de clases de objetos naturales y artificiales.
+Por eso, cada elemento tiene su propia clase aparte.
+
+El resultado de nuestro mundo se encuentra en el siguiente enlace:
+https://www.youtube.com/watch?v=fKQ33hqxk5A
