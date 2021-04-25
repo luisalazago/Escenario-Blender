@@ -19,6 +19,7 @@
 #include <FreeImage.h>
 
 #define deltaX 0.01
+#define deltaRX 0.01
 #define deltaAlfa 0.1
 
 //-----------------------------------------------------------------------------
@@ -47,6 +48,8 @@ protected:
    bool rotarDer, rotarIzq, rotarUp, rotarDown;
    float ejex, ejey, ejez;
    float alfa;
+   bool movRI, movRD, movZfrente, movZatras;
+   float movRocX, movRocZ;
    GLuint texid;
 
 public:
@@ -59,6 +62,13 @@ public:
         else if (movAbajo) camY += deltaX;
         else if (movZ1) camZ += deltaX;
         else if (movZ2) camZ -= deltaX;
+    }
+
+    void posRoci() {
+        if (movRI) movRocX -= deltaRX;
+        else if (movRD) movRocX += deltaRX;
+        else if (movZfrente) movRocZ += deltaRX;
+        else if (movZatras) movRocZ -= deltaRX;
     }
 
     void posVision() {
@@ -118,6 +128,7 @@ public:
       glPushMatrix();
       posCamara();
       posVision();
+      posRoci();
       glTranslatef(camX, camY, camZ);
       glRotatef(alfa, ejex, ejey, ejez);
       if (shader) shader->begin();
@@ -165,16 +176,16 @@ public:
               }
           glPopMatrix();
 
+          // Caballo
+          glPushMatrix();
+              glTranslatef(movRocX, -0.2, movRocZ);
+              glScalef(0.25, 0.25, 0.25);
+              rocinante.dibujarCaballo();
+          glPopMatrix();
           //Sector 3 ubicación molinos
 
           glPushMatrix();
               glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
-              // Caballo
-              glPushMatrix();
-                  glTranslatef(0.3, -0.2, 0.5);
-                  glScalef(0.25, 0.25, 0.25);
-                  rocinante.dibujarCaballo();
-              glPopMatrix();
               // Plano
               glPushMatrix();
                 glTranslatef(0.0, ((-1 * m) / 6), 0.0);
@@ -208,11 +219,9 @@ public:
       if (shader) shader->end();
 
       if (shaderT) shaderT->begin();
-          glTranslatef(((-1 * n) / 2), 0, (-1 * m) - 2);
-          
           // Don Quijote
           glPushMatrix();
-            glTranslatef(0.3, -0.08, 0.5);
+          glTranslatef(movRocX, -0.08, movRocZ);
             glRotatef(90, 1.0, 0.0, 0.0);
             glScalef(0.06, 0.06, 0.06);
             glBindTexture(GL_TEXTURE_2D, texid);
@@ -273,6 +282,9 @@ public:
       camX = camY = camZ = 0;
       rotarDer = rotarIzq = rotarUp = rotarDown = false;
       ejex = ejey = ejez = alfa = 0;
+      movRI = movRD = movZfrente = movZatras = false;
+      movRocX = -1;
+      movRocZ = 3;
 	}
 
 	virtual void OnResize(int w, int h)
@@ -341,6 +353,19 @@ public:
                 ejez = 0;
                 alfa = 0;
                 break;
+            //Mov rocinanate
+            case 'A':
+                movRI = true;
+                break;
+            case 'D':
+                movRD = true;
+                break;
+            case 'S':
+                movZfrente = true;
+                break;
+            case 'W':
+                movZatras = true;
+                break;
         }
         // std::cout << movX << std::endl;
 	};
@@ -381,6 +406,19 @@ public:
             break;
         case 'l':
             rotarDer = false;
+            break;
+        //Mov rocinanate
+        case 'A':
+            movRI = false;
+            break;
+        case 'D':
+            movRD = false;
+            break;
+        case 'S':
+            movZfrente = false;
+            break;
+        case 'W':
+            movZatras = false;
             break;
       }
       /*
