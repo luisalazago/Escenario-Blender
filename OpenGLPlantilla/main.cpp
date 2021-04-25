@@ -318,70 +318,72 @@ public:
 	virtual void OnMouseUp(int button, int x, int y) {}
 	virtual void OnMouseWheel(int nWheelNumber, int nDirection, int x, int y){}
 
-	virtual void OnKeyDown(int nKey, char cAscii)
-	{    
-        std::cout << cAscii << std::endl;
+    virtual void OnKeyDown(int nKey, char cAscii)
+    {
+        std::cout << nKey << std::endl;
         switch (cAscii) {
-            case 27: 
-                this->Close(); // Close Window!
-                break;
-            case 'a':
-                movX = true;
-                break;
-            case 'd':
-                movD = true;
-                break;
-            case 's':
-                movAbajo = true;
-                break;
-            case 'w':
-                movA = true;
-                break;
-            case 'z':
-                movZ1 = true;
-                break;
-            case 'x':
-                movZ2 = true;
-                break;
-             //Vision rotacion
-            case 'i':
-                rotarUp = true;
-                break;
-            case 'k':
-                rotarDown = true;
-                break;
-            case 'j':
-                rotarIzq = true;
-                break;
-            case 'l':
-                rotarDer = true;
-                break;
-            case 'r':
-                ejex = 0;
-                ejey = 0;
-                ejez = 0;
-                alfa = 0;
-                break;
+        case 27:
+            this->Close(); // Close Window!
+            break;
+        case 'a':
+            movX = true;
+            break;
+        case 'd':
+            movD = true;
+            break;
+        case 's':
+            movAbajo = true;
+            break;
+        case 'w':
+            movA = true;
+            break;
+        case 'z':
+            movZ1 = true;
+            break;
+        case 'x':
+            movZ2 = true;
+            break;
+            //Vision rotacion
+        case 'i':
+            rotarUp = true;
+            break;
+        case 'k':
+            rotarDown = true;
+            break;
+        case 'j':
+            rotarIzq = true;
+            break;
+        case 'l':
+            rotarDer = true;
+            break;
+        case 'r':
+            ejex = 0;
+            ejey = 0;
+            ejez = 0;
+            alfa = 0;
+            break;
+        }
+        switch (nKey) {
             //Mov rocinanate
-            case 'A':
-                movRI = true;
-                break;
-            case 'D':
-                movRD = true;
-                break;
-            case 'S':
-                movZfrente = true;
-                break;
-            case 'W':
-                movZatras = true;
-                break;
+        case 100:
+            movRI = true;
+            break;
+        case 102:
+            movRD = true;
+            break;
+        case 103:
+            movZfrente = true;
+            break;
+        case 101:
+            movZatras = true;
+            break;
         }
         // std::cout << movX << std::endl;
-	};
+    };
 
-	virtual void OnKeyUp(int nKey, char cAscii)
-	{
-      switch (cAscii) {
+    virtual void OnKeyUp(int nKey, char cAscii)
+    {
+        switch (cAscii) {
         case 27:
             this->Close(); // Close Window!
             break;
@@ -403,11 +405,11 @@ public:
         case 'x':
             movZ2 = false;
             break;
-        //Vision rotacion
+            //Vision rotacion
         case 'i':
             rotarUp = false;
             break;
-        case 'k': 
+        case 'k':
             rotarDown = false;
             break;
         case 'j':
@@ -416,26 +418,28 @@ public:
         case 'l':
             rotarDer = false;
             break;
-        //Mov rocinanate
-        case 'A':
+        }
+        switch (nKey) {
+            //Mov rocinanate
+        case 100:
             movRI = false;
             break;
-        case 'D':
+        case 102:
             movRD = false;
             break;
-        case 'S':
+        case 103:
             movZfrente = false;
             break;
-        case 'W':
+        case 101:
             movZatras = false;
             break;
-      }
-      /*
-      if (cAscii == 's')      // s: Shader
-         shader->enable();*/
-      if (cAscii == 'f') // f: Fixed Function
-         shader->disable();
-	}
+        }
+        /*
+        if (cAscii == 's')      // s: Shader
+           shader->enable();*/
+        if (cAscii == 'f') // f: Fixed Function
+            shader->disable();
+    }
 
    void UpdateTimer()
    {
